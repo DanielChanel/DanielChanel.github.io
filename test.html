@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业进场成功</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #3a3b4a;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            background-color: #000;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            font-size: 14px;
+            height: 30px;
+            align-items: center;
+        }
+        
+        .status-bar .left {
+            font-weight: normal;
+        }
+        
+        .status-bar .center {
+            font-weight: bold;
+        }
+        
+        .status-bar .right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-bar .center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .battery {
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+        }
+        
+        .battery-icon {
+            width: 25px;
+            height: 12px;
+            border: 1px solid white;
+            border-radius: 2px;
+            position: relative;
+            margin-left: 5px;
+        }
+        
+        .battery-icon:after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 4px;
+            background: white;
+            top: 3px;
+            right: -3px;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .battery-level {
+            height: 100%;
+            width: 79%;
+            background-color: #ffd700;
+            border-radius: 1px;
+        }
+        
+        /* 用户信息区域 */
+        .user-info {
+            background-color: #3a3b4a;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            font-size: 24px;
+        }
+        
+        /* 主卡片区域 */
+        .card {
+            background-color: white;
+            margin: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: #4CAF50; /* 默认为绿色 */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+        
+        #successPage .card-header {
+            background-color: #f5c842; /* 成功页面保持黄色 */
+        }
+        
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .time {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background-color: #f5c842; /* 与成功页面卡片头部颜色一致 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .checkmark {
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        
+        .success-text {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .entry-time {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .refresh-button {
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* 成功页面样式 */
+        .success-page {
+            display: none;
+        }
+        
+        .default-page {
+            display: block;
+        }
+        
+        .qrcode-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .qrcode-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .qrcode-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .close-button {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background-color: #f5c842;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        /* 底部提示区域 */
+        .footer-notice {
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+        <div class="left">无SIM卡</div>
+        <div class="center" id="statusBarTime">下午 2:49</div>
+        <div class="right">
+            <span>⏰</span>
+            <div class="battery">
+                79%
+                <div class="battery-icon">
+                    <div class="battery-level"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 用户信息区域 -->
+    <div class="user-info">
+        Huaping Liu(刘华平)(16883452)
+    </div>
+    
+    <!-- 默认页面 - 二维码页面 -->
+    <div class="card default-page" id="defaultPage">
+        <div class="card-header">
+            将二维码对准扫描器刷码出场
+        </div>
+        <div class="card-content">
+            <div class="time" id="currentTime">2025-10-16 14:49:21</div>
+            
+            <div id="qrcode" style="margin: 20px 0; cursor: pointer;"></div>
+            
+            <div class="refresh-button" id="refreshQRCode">刷新二维码</div>
+        </div>
+    </div>
+    
+    <!-- 成功页面 -->
+    <div class="card success-page" id="successPage">
+        <div class="card-header">
+            您的设备已符合安全规范
+        </div>
+        <div class="card-content">
+            <div class="time" id="successTime">2025-10-16 12:40:50</div>
+            
+            <div class="success-icon">
+                <div class="checkmark">✓</div>
+            </div>
+            
+            <div class="success-text">进场成功</div>
+            <div class="entry-time">2025-10-16 12:35</div>
+            
+            <div class="refresh-button" id="backToQRCode">刷新二维码</div>
+        </div>
+    </div>
+    
+    <!-- 底部提示区域 -->
+    <div class="footer-notice">
+        尊敬的员工您好，您已进入企业涉密<br>
+        区域，出于企业安全考虑，您的手机摄像<br>
+        头和热点将被禁用，感谢您的配合。
+    </div>
+    <!-- 移除二维码弹窗 -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshButton = document.getElementById('refreshQRCode');
+            const backButton = document.getElementById('backToQRCode');
+            const timeDisplay = document.getElementById('currentTime');
+            const successTimeDisplay = document.getElementById('successTime');
+            const defaultPage = document.getElementById('defaultPage');
+            const successPage = document.getElementById('successPage');
+            const qrcodeContainer = document.getElementById('qrcode');
+            let qrcode = null;
+            
+            // 更新时间显示
+            function updateTime() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                timeDisplay.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                
+                // 更新状态栏时间
+                const statusBarTime = document.getElementById('statusBarTime');
+                const isPM = now.getHours() >= 12;
+                const hour12 = now.getHours() % 12 || 12;
+                statusBarTime.textContent = `${isPM ? '下午' : '上午'} ${hour12}:${minutes}`;
+            }
+            
+            // 显示成功页面
+            function showSuccessPage() {
+                defaultPage.style.display = 'none';
+                successPage.style.display = 'block';
+                
+                // 设置成功页面的时间
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                
+                successTimeDisplay.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+            
+            // 显示默认页面（二维码页面）
+            function showDefaultPage() {
+                successPage.style.display = 'none';
+                defaultPage.style.display = 'block';
+                generateQRCode();
+            }
+            
+            // 生成二维码函数
+            function generateQRCode() {
+                // 如果已经有二维码，先清除
+                if (qrcode) {
+                    document.getElementById('qrcode').innerHTML = '';
+                }
+                
+                // 更新时间
+                updateTime();
+                
+                // 生成新的二维码
+                // 这里可以自定义二维码内容，使用更短的格式
+                const now = new Date();
+                const timestamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+                const qrcodeContent = 'ID:16883452-' + timestamp;
+                
+                // 创建二维码
+                qrcode = new QRCode(document.getElementById('qrcode'), {
+                    text: qrcodeContent,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+            
+            // 页面加载时生成二维码
+            generateQRCode();
+            
+            // 点击二维码切换到成功页面
+            qrcodeContainer.addEventListener('click', function() {
+                showSuccessPage();
+            });
+            
+            // 点击刷新二维码按钮
+            refreshButton.addEventListener('click', function() {
+                generateQRCode();
+            });
+            
+            // 点击返回按钮
+            backButton.addEventListener('click', function() {
+                showDefaultPage();
+            });
+            
+            // 每分钟更新一次时间
+            setInterval(updateTime, 60000);
+        });
+    </script>
+</body>
+</html>
