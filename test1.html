@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <title>进场成功页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #d5d1d1;
+            font-family: 宋体, SimSun;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-bar {
+/*            background-color: #ebbc48;
+*/            background-color: green;
+            color: white;
+            padding: 32px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+            height:auto
+        }
+
+        .time {
+            font-size: 25px;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            background-color: #ebbc48;
+            display: flex;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            margin: 60px auto 20px;
+            font-size: 40px;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+            .checkmark.green {
+                background-color: green;
+            }
+
+        .success-text {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .success-time {
+            font-size: 20px;
+            color: #666;
+        }
+
+        .refresh-btn {
+            margin-top: 30px;
+            color: #666;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .footer-message {
+            margin-top: 30px;
+            max-width: 400px;
+            text-align: left;
+            font-size: 22px;
+            color: #d3d3b9;
+        }
+        .qrcode-container {
+            width: 300px;
+            height: 300px;
+            margin-left: 28px;
+            background-color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .qrcode {
+            width: 100%;
+            height: 100%;
+            background-color: green;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 10px;
+            text-align: center;
+        }
+        .div1 {
+            display: none;
+            width: 96%;
+            height: 300px;
+            margin: 10px auto 20px;
+            background-color: white;
+            padding: 5px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2>ChengKai Wang(王成凯)(28060546)</h2>
+    </div>
+    <div class="card">
+        <div class="status-bar" id="text">
+            将二维码对准扫码器刷码进厂
+        </div>
+        <div class="content">
+            <div class="time" id="currentTime">2025-10-16 12:40:50</div>
+
+            <div id="qrcodeContainer" class="qrcode-container">
+                <canvas id="qrcode" class="qrcode"></canvas>
+            </div>
+            <div class="div1" id="checkmark">
+                <div  class="checkmark">✔</div>
+                <div class="success-text">进厂成功</div>
+                <div class="success-time" id="currentTime1">2025-10-16 12:35</div>
+
+            </div>
+            <div class="refresh-btn" id="refreshBtn">刷新二维码</div>
+        </div>
+    </div>
+    <div class="footer-message">
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头和热点将被禁用，感谢您的配合。</p>
+    </div>
+
+    <script>
+      
+        setInterval(function () {
+        document.querySelector('.status-bar').style.backgroundColor = '#ebbc48';
+            const qrcodeContainer = document.getElementById('qrcodeContainer');
+            document.getElementById('text').textContent = '您 的 设 备 已 符 合 安 全 规 范';
+         qrcodeContainer.style.display = 'none';
+            checkmark.style.display = 'block';
+        }, 2000);
+        // 生成二维码
+        const qrcodeElement = document.getElementById('qrcode');
+        QRCode.toCanvas(qrcodeElement, 'https://www.example.com', {
+            width: 300,       // 二维码宽度
+            margin: 1,        // 二维码边距
+            color: {
+                dark: '#000000',   // 二维码黑色部分颜色
+                light: '#FFFFFF'   // 二维码白色背景颜色
+            }
+        }, function (error) {
+            if (error) console.error(error);
+        });
+        function updateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            document.getElementById('currentTime').textContent = `${year}-${month}-${day} ${hours}:${minutes}`;
+            document.getElementById('currentTime1').textContent = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+        }
+        // 初始化时间
+        updateTime();
+        // 每秒更新一次时间
+        setInterval(updateTime, 1000);
+        // 刷新二维码按钮
+        document.getElementById('refreshBtn').addEventListener('click', function () {
+            //document.querySelector('.status-bar').style.backgroundColor = '#ebbc48';
+            const qrcodeContainer = document.getElementById('qrcodeContainer');
+            document.getElementById('text').textContent = '将二维码对准扫码器刷码进厂';
+            // 重新生成二维码（可以更换URL）
+            QRCode.toCanvas(qrcodeElement, 'https://www.example.com/refresh-' + Math.random(), {
+                width: 300,       // 二维码宽度
+                margin: 1,        // 二维码边距
+                color: {
+                    dark: '#000000',   // 二维码黑色部分颜色
+                    light: '#FFFFFF'   // 二维码白色背景颜色
+                }}, function (error) {
+                if (error) console.error(error);
+            });
+
+            //// 隐藏对勾，显示二维码
+            qrcodeContainer.style.display = 'block';
+            checkmark.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
